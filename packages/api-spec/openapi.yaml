@@ -1,0 +1,799 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: appointments
+    description: Appointment scheduling operations
+  - name: messages
+    description: Message inbox operations
+  - name: notifications
+    description: Notification operations
+  - name: care-team
+    description: Care team management
+  - name: billing
+    description: Billing and invoices
+  - name: health-reports
+    description: Patient health reports
+paths:
+  /auth/signup:
+    post:
+      operationId: signup
+      tags: [auth]
+      summary: Create a family or caregiver account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignupRequest"
+      responses:
+        "201":
+          description: Account created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Sign in to an existing account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /status:
+    get:
+      operationId: statusCheck
+      tags: [health]
+      summary: Database status check
+      description: Returns service and database connectivity state
+      responses:
+        "200":
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusResponse"
+        "500":
+          description: Database unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /appointments:
+    get:
+      operationId: listAppointments
+      tags: [appointments]
+      summary: List all appointments
+      responses:
+        "200":
+          description: Appointment list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Appointment"
+    post:
+      operationId: createAppointment
+      tags: [appointments]
+      summary: Create a new appointment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AppointmentCreate"
+      responses:
+        "201":
+          description: Appointment created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Appointment"
+  /appointments/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    put:
+      operationId: updateAppointment
+      tags: [appointments]
+      summary: Update an appointment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AppointmentUpdate"
+      responses:
+        "200":
+          description: Appointment updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Appointment"
+    delete:
+      operationId: deleteAppointment
+      tags: [appointments]
+      summary: Delete an appointment
+      responses:
+        "204":
+          description: Appointment deleted
+  /messages:
+    get:
+      operationId: listMessages
+      tags: [messages]
+      summary: List user messages
+      responses:
+        "200":
+          description: Message list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Message"
+    post:
+      operationId: createMessage
+      tags: [messages]
+      summary: Send a message
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MessageCreate"
+      responses:
+        "201":
+          description: Message created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+  /messages/{id}/read:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    patch:
+      operationId: markMessageRead
+      tags: [messages]
+      summary: Mark a message as read
+      responses:
+        "200":
+          description: Message marked as read
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+  /notifications:
+    get:
+      operationId: listNotifications
+      tags: [notifications]
+      summary: List notifications
+      responses:
+        "200":
+          description: Notification list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Notification"
+    post:
+      operationId: createNotification
+      tags: [notifications]
+      summary: Create a notification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NotificationCreate"
+      responses:
+        "201":
+          description: Notification created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Notification"
+  /notifications/{id}/read:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    patch:
+      operationId: markNotificationRead
+      tags: [notifications]
+      summary: Mark a notification as read
+      responses:
+        "200":
+          description: Notification marked as read
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Notification"
+  /care-team:
+    get:
+      operationId: listCareTeam
+      tags: [care-team]
+      summary: List care team members
+      responses:
+        "200":
+          description: Care team list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CareTeamMember"
+    post:
+      operationId: createCareTeamMember
+      tags: [care-team]
+      summary: Add a care team member
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CareTeamMemberCreate"
+      responses:
+        "201":
+          description: Member created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CareTeamMember"
+  /care-team/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    put:
+      operationId: updateCareTeamMember
+      tags: [care-team]
+      summary: Update a care team member
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CareTeamMemberUpdate"
+      responses:
+        "200":
+          description: Member updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CareTeamMember"
+    delete:
+      operationId: deleteCareTeamMember
+      tags: [care-team]
+      summary: Remove a care team member
+      responses:
+        "204":
+          description: Member deleted
+  /billing/invoices:
+    get:
+      operationId: listInvoices
+      tags: [billing]
+      summary: List invoices
+      responses:
+        "200":
+          description: Invoice list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Invoice"
+    post:
+      operationId: createInvoice
+      tags: [billing]
+      summary: Create a billing invoice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InvoiceCreate"
+      responses:
+        "201":
+          description: Invoice created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Invoice"
+  /billing/invoices/{id}/pay:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      operationId: payInvoice
+      tags: [billing]
+      summary: Mark an invoice as paid
+      responses:
+        "200":
+          description: Invoice paid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Invoice"
+  /health-reports:
+    get:
+      operationId: listHealthReports
+      tags: [health-reports]
+      summary: List health reports
+      responses:
+        "200":
+          description: Health report list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/HealthReport"
+    post:
+      operationId: createHealthReport
+      tags: [health-reports]
+      summary: Create a health report
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HealthReportCreate"
+      responses:
+        "201":
+          description: Health report created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthReport"
+components:
+  schemas:
+    User:
+      type: object
+      required: [id, name, email, role, createdAt]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        email: { type: string, format: email }
+        role: { type: string, enum: [family, caregiver, admin] }
+        createdAt: { type: string, format: date-time }
+    SignupRequest:
+      type: object
+      required: [name, email, password]
+      properties:
+        name: { type: string, minLength: 2 }
+        email: { type: string, format: email }
+        password: { type: string, minLength: 8 }
+        role: { type: string, enum: [family, caregiver], default: family }
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string, format: email }
+        password: { type: string }
+    AuthResponse:
+      type: object
+      required: [user, token]
+      properties:
+        user: { $ref: "#/components/schemas/User" }
+        token: { type: string }
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+    StatusResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        db:
+          type: string
+      required:
+        - status
+        - db
+    Appointment:
+      type: object
+      properties:
+        id:
+          type: string
+        clientName:
+          type: string
+        service:
+          type: string
+        date:
+          type: string
+          format: date
+        time:
+          type: string
+        location:
+          type: string
+        caregiverId:
+          type: string
+        status:
+          type: string
+          enum: [Scheduled, Completed, Cancelled, Rescheduled]
+        notes:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - clientName
+        - service
+        - date
+        - time
+        - status
+        - createdAt
+        - updatedAt
+    AppointmentCreate:
+      type: object
+      properties:
+        clientName:
+          type: string
+        service:
+          type: string
+        date:
+          type: string
+          format: date
+        time:
+          type: string
+        location:
+          type: string
+        caregiverId:
+          type: string
+        status:
+          type: string
+          enum: [Scheduled, Completed, Cancelled, Rescheduled]
+        notes:
+          type: string
+      required:
+        - clientName
+        - service
+        - date
+        - time
+    AppointmentUpdate:
+      type: object
+      properties:
+        clientName:
+          type: string
+        service:
+          type: string
+        date:
+          type: string
+          format: date
+        time:
+          type: string
+        location:
+          type: string
+        caregiverId:
+          type: string
+        status:
+          type: string
+          enum: [Scheduled, Completed, Cancelled, Rescheduled]
+        notes:
+          type: string
+    Message:
+      type: object
+      properties:
+        id:
+          type: string
+        senderId:
+          type: string
+        recipientId:
+          type: string
+        subject:
+          type: string
+        text:
+          type: string
+        sentAt:
+          type: string
+          format: date-time
+        read:
+          type: boolean
+      required:
+        - id
+        - senderId
+        - recipientId
+        - text
+        - sentAt
+        - read
+    MessageCreate:
+      type: object
+      properties:
+        senderId:
+          type: string
+        recipientId:
+          type: string
+        subject:
+          type: string
+        text:
+          type: string
+      required:
+        - senderId
+        - recipientId
+        - text
+    Notification:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        body:
+          type: string
+        category:
+          type: string
+          enum: [alert, reminder, update, info]
+        createdAt:
+          type: string
+          format: date-time
+        read:
+          type: boolean
+      required:
+        - id
+        - title
+        - body
+        - category
+        - createdAt
+        - read
+    NotificationCreate:
+      type: object
+      properties:
+        title:
+          type: string
+        body:
+          type: string
+        category:
+          type: string
+          enum: [alert, reminder, update, info]
+      required:
+        - title
+        - body
+        - category
+    CareTeamMember:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+        status:
+          type: string
+        specialties:
+          type: array
+          items:
+            type: string
+        rating:
+          type: number
+        bio:
+          type: string
+        avatarUrl:
+          type: string
+        isPrimary:
+          type: boolean
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - role
+        - status
+        - specialties
+        - rating
+        - isPrimary
+        - updatedAt
+    CareTeamMemberCreate:
+      type: object
+      properties:
+        name:
+          type: string
+        role:
+          type: string
+        status:
+          type: string
+        specialties:
+          type: array
+          items:
+            type: string
+        rating:
+          type: number
+        bio:
+          type: string
+        avatarUrl:
+          type: string
+        isPrimary:
+          type: boolean
+      required:
+        - name
+        - role
+        - status
+        - specialties
+        - rating
+        - isPrimary
+    CareTeamMemberUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        role:
+          type: string
+        status:
+          type: string
+        specialties:
+          type: array
+          items:
+            type: string
+        rating:
+          type: number
+        bio:
+          type: string
+        avatarUrl:
+          type: string
+        isPrimary:
+          type: boolean
+    Invoice:
+      type: object
+      properties:
+        id:
+          type: string
+        invoiceId:
+          type: string
+        date:
+          type: string
+        dueDate:
+          type: string
+        description:
+          type: string
+        amount:
+          type: number
+          format: float
+        status:
+          type: string
+          enum: [Paid, Pending, Overdue]
+        clientName:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - invoiceId
+        - date
+        - dueDate
+        - description
+        - amount
+        - status
+        - createdAt
+    InvoiceCreate:
+      type: object
+      properties:
+        invoiceId:
+          type: string
+        date:
+          type: string
+        dueDate:
+          type: string
+        description:
+          type: string
+        amount:
+          type: number
+          format: float
+        status:
+          type: string
+          enum: [Paid, Pending, Overdue]
+        clientName:
+          type: string
+      required:
+        - invoiceId
+        - date
+        - dueDate
+        - description
+        - amount
+        - status
+    HealthReport:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        value:
+          type: string
+        status:
+          type: string
+        date:
+          type: string
+        notes:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - type
+        - value
+        - status
+        - date
+        - createdAt
+    HealthReportCreate:
+      type: object
+      properties:
+        type:
+          type: string
+        value:
+          type: string
+        status:
+          type: string
+        date:
+          type: string
+        notes:
+          type: string
+      required:
+        - type
+        - value
+        - status
+        - date
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
