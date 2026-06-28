@@ -17,12 +17,17 @@ import CareTeamPage from "@/pages/care-team";
 import { AuthPage } from "@/pages/auth";
 import LegalPage from "@/pages/legal";
 import { AuthProvider } from "@/lib/auth";
+import CaregiverClients from "@/pages/caregiver-clients";
+import CaregiverSchedule from "./pages/caregiver-schedule";
 
 const queryClient = new QueryClient();
 
 function Router() {
   return (
     <Switch>
+
+      <Route path="/caregiver-schedule" component={CaregiverSchedule} />  
+      <Route path="/caregiver-clients"component={CaregiverClients}/>
       <Route path="/" component={Home} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/family-dashboard" component={FamilyDashboard} />

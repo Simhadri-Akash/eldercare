@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { useQueryClient } from "@tanstack/react-query";
+import { Progress } from "@/components/ui/progress";
+import { Phone } from "lucide-react";
 import { 
   FileText, Download, Share2, Printer, ChevronDown, ChevronRight, 
   Calendar, Activity, Heart, Pill, User, Shield, FlaskConical, 
@@ -318,7 +320,43 @@ export default function HealthReportsPage() {
                       <p className="text-muted-foreground mt-1">Snapshot of Margaret's health and recent activity.</p>
                     </div>
                   </div>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>
+                        📊 Monthly Comparison
+                      </CardTitle>
+                    </CardHeader>
 
+                    <CardContent>
+
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Metric</TableHead>
+                            <TableHead>May</TableHead>
+                            <TableHead>June</TableHead>
+                          </TableRow>
+                        </TableHeader>
+
+                        <TableBody>
+
+                          <TableRow>
+                            <TableCell>Health Score</TableCell>
+                            <TableCell>79</TableCell>
+                            <TableCell>82 ↑</TableCell>
+                          </TableRow>
+
+                          <TableRow>
+                            <TableCell>Adherence</TableCell>
+                            <TableCell>91%</TableCell>
+                            <TableCell>87% ↓</TableCell>
+                          </TableRow>
+
+                        </TableBody>
+                      </Table>
+
+                    </CardContent>
+                  </Card>
                   {/* Health Score Chart */}
                   <Card className="shadow-sm border-border overflow-hidden">
                     <CardHeader className="pb-2 bg-card">
@@ -379,7 +417,79 @@ export default function HealthReportsPage() {
                       </Card>
                     ))}
                   </div>
+                  <Card className="mt-6 shadow-sm border-border">
+                    <CardHeader>
+                      <CardTitle className="font-serif">
+                        Emergency & Care Contacts
+                      </CardTitle>
+                    </CardHeader>
 
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                        <Card className="border-border">
+                          <CardContent className="p-4">
+                            <div className="flex items-center gap-3 mb-3">
+                              <Phone className="h-5 w-5 text-primary" />
+                              <h3 className="font-medium">
+                                Primary Caregiver
+                              </h3>
+                            </div>
+
+                            <p className="font-semibold">
+                              Sarah Mitchell
+                            </p>
+
+                            <p className="text-sm text-muted-foreground">
+                              Senior Caregiver
+                            </p>
+
+                            <p className="mt-2">
+                              +1 9876543210
+                            </p>
+
+                            <Button
+                              variant="outline"
+                              className="w-full mt-4"
+                            >
+                              Contact Caregiver
+                            </Button>
+                          </CardContent>
+                        </Card>
+
+                        <Card className="border-border">
+                          <CardContent className="p-4">
+                            <div className="flex items-center gap-3 mb-3">
+                              <Phone className="h-5 w-5 text-primary" />
+                              <h3 className="font-medium">
+                                Primary Doctor
+                              </h3>
+                            </div>
+
+                            <p className="font-semibold">
+                              Dr. Priya Sharma
+                            </p>
+
+                            <p className="text-sm text-muted-foreground">
+                              Primary Care Physician
+                            </p>
+
+                            <p className="mt-2">
+                              +1 9876543211
+                            </p>
+
+                            <Button
+                              variant="outline"
+                              className="w-full mt-4"
+                            >
+                              Contact Doctor
+                            </Button>
+                          </CardContent>
+                        </Card>
+
+                      </div>
+                    </CardContent>
+                  </Card>
                   <div className="grid md:grid-cols-3 gap-6">
                     {/* Recent Reports */}
                     <Card className="md:col-span-2 shadow-sm border-border">
@@ -435,7 +545,56 @@ export default function HealthReportsPage() {
                         </div>
                       </CardContent>
                     </Card>
+                    <Card className="shadow-sm border-border">
+                      <CardHeader>
+                        <CardTitle className="font-serif text-lg">
+                          🔔 Reminder Center
+                        </CardTitle>
+                      </CardHeader>
 
+                      <CardContent className="space-y-3">
+
+                        <div className="flex justify-between items-center p-3 rounded-lg border">
+                          <div>
+                            <h4 className="font-medium">Morning Medication</h4>
+                            <p className="text-xs text-muted-foreground">
+                              Completed
+                            </p>
+                          </div>
+
+                          <Badge className="bg-green-100 text-green-700">
+                            Done
+                          </Badge>
+                        </div>
+
+                        <div className="flex justify-between items-center p-3 rounded-lg border">
+                          <div>
+                            <h4 className="font-medium">Evening Medication</h4>
+                            <p className="text-xs text-muted-foreground">
+                              Pending
+                            </p>
+                          </div>
+
+                          <Badge variant="destructive">
+                            Pending
+                          </Badge>
+                        </div>
+
+                        <div className="flex justify-between items-center p-3 rounded-lg border">
+                          <div>
+                            <h4 className="font-medium">Blood Test</h4>
+                            <p className="text-xs text-muted-foreground">
+                              Due in 10 Days
+                            </p>
+                          </div>
+
+                          <Badge>
+                            Upcoming
+                          </Badge>
+                        </div>
+
+                      </CardContent>
+                    </Card>
                     {/* Upcoming Reports */}
                     <Card className="shadow-sm border-border bg-accent/30 border-accent h-fit">
                       <CardHeader>
@@ -612,7 +771,38 @@ export default function HealthReportsPage() {
                       </CardContent>
                     </Card>
                   </div>
+                  <Card className="shadow-sm border-border">
+                    <CardHeader>
+                      <CardTitle>
+                        🧠 AI Health Insights
+                      </CardTitle>
+                    </CardHeader>
 
+                    <CardContent>
+                      <ul className="space-y-3">
+
+                        <li className="p-3 rounded-lg bg-muted">
+                          Medication adherence dropped by 13%
+                          this month.
+                        </li>
+
+                        <li className="p-3 rounded-lg bg-muted">
+                          Blood pressure remains stable.
+                        </li>
+
+                        <li className="p-3 rounded-lg bg-muted">
+                          Mobility improved compared
+                          to last month.
+                        </li>
+
+                        <li className="p-3 rounded-lg bg-muted">
+                          Evening medication reminder
+                          is recommended.
+                        </li>
+
+                      </ul>
+                    </CardContent>
+                  </Card>
                   {/* Charts Row */}
                   <div className="grid md:grid-cols-2 gap-6">
                     <Card className="shadow-sm border-border">
@@ -744,7 +934,45 @@ export default function HealthReportsPage() {
                 </motion.div>
               </AnimatePresence>
             )}
+            <Card>
+              <CardHeader>
+                <CardTitle>
+                  🎯 Health Goals
+                </CardTitle>
+              </CardHeader>
 
+              <CardContent>
+
+                <div className="space-y-4">
+
+                  <div>
+                    <p className="font-medium">
+                      Blood Pressure Goal
+                    </p>
+
+                    <Progress value={85} />
+                  </div>
+
+                  <div>
+                    <p className="font-medium">
+                      Medication Adherence
+                    </p>
+
+                    <Progress value={87} />
+                  </div>
+
+                  <div>
+                    <p className="font-medium">
+                      LDL Reduction Goal
+                    </p>
+
+                    <Progress value={65} />
+                  </div>
+
+                </div>
+
+              </CardContent>
+            </Card>
             {/* VIEW 3: DOCTOR REPORTS */}
             {activeView === "doctor" && (
               <AnimatePresence mode="wait">
@@ -807,7 +1035,73 @@ export default function HealthReportsPage() {
                 </motion.div>
               </AnimatePresence>
             )}
+            <Card>
+              <CardHeader>
+                <CardTitle>
+                  📋 Follow-Up Tasks
+                </CardTitle>
+              </CardHeader>
 
+              <CardContent>
+
+                <div className="space-y-4">
+
+                  <div className="flex gap-3 items-center">
+                    <input type="checkbox" />
+                    <span>Monitor Metformin Adherence</span>
+                  </div>
+
+                  <div className="flex gap-3 items-center">
+                    <input type="checkbox" />
+                    <span>Schedule Blood Panel</span>
+                  </div>
+
+                  <div className="flex gap-3 items-center">
+                    <input type="checkbox" />
+                    <span>Cardiology Review</span>
+                  </div>
+
+                  <div className="flex gap-3 items-center">
+                    <input type="checkbox" />
+                    <span>Annual Wellness Visit</span>
+                  </div>
+
+                </div>
+
+              </CardContent>
+            </Card>
+            <Card className="border-yellow-300 bg-yellow-50">
+              <CardHeader>
+                <CardTitle>
+                  ⚠ Risk Alerts
+                </CardTitle>
+              </CardHeader>
+
+              <CardContent className="space-y-3">
+
+                <div className="flex justify-between">
+                  <span>HbA1c</span>
+                  <Badge variant="destructive">
+                    Borderline
+                  </Badge>
+                </div>
+
+                <div className="flex justify-between">
+                  <span>LDL Cholesterol</span>
+                  <Badge variant="destructive">
+                    High
+                  </Badge>
+                </div>
+
+                <div className="flex justify-between">
+                  <span>Blood Pressure</span>
+                  <Badge className="bg-green-100 text-green-700">
+                    Normal
+                  </Badge>
+                </div>
+
+              </CardContent>
+            </Card>
             {/* VIEW 4: LAB RESULTS */}
             {activeView === "lab" && (
               <AnimatePresence mode="wait">

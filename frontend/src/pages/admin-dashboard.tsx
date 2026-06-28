@@ -1,14 +1,47 @@
 import { useState } from "react";
-import { 
-  Heart, Users, Activity, AlertTriangle, Search, 
-  Download, ArrowUpRight, Bell, FileText, CheckCircle, 
-  Settings, LogOut, Plus, Calendar as CalendarIcon, 
-  Star, Menu, X 
-} from "lucide-react";
 import { Link } from "wouter";
-import { Area, AreaChart, CartesianGrid, Tooltip, XAxis, YAxis, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, Legend } from "recharts";
-import { useToast } from "@/hooks/use-toast";
 
+import {
+  Heart,
+  Users,
+  Activity,
+  AlertTriangle,
+  Search,
+  Download,
+  ArrowUpRight,
+  Bell,
+  FileText,
+  CheckCircle,
+  Settings,
+  LogOut,
+  Plus,
+  Calendar as CalendarIcon,
+  Star,
+  Menu,
+  X,
+  Calendar,
+  MessageSquare,
+  BarChart3,
+  ShieldCheck
+} from "lucide-react";
+
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  Tooltip,
+  XAxis,
+  YAxis,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  LineChart,
+  Line,
+  Legend
+} from "recharts";
+
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -130,57 +163,130 @@ export default function AdminDashboard() {
     return "bg-destructive/20 text-destructive border-destructive/30";
   };
 
-  const Sidebar = () => (
-    <div className="flex flex-col h-full bg-sidebar border-r border-sidebar-border">
-      <div className="p-6">
-        <Link href="/" className="flex items-center gap-2 mb-10">
-          <img src="/befine-logo.jpeg" alt="Befine" className="h-9 object-contain" />
-        </Link>
-        
-        <div className="flex items-center gap-3 mb-8">
-          <Avatar className="h-12 w-12 border-2 border-primary/20">
-            <AvatarImage src="https://i.pravatar.cc/150?u=diane" alt="Diane Foster" />
-            <AvatarFallback>DF</AvatarFallback>
-          </Avatar>
-          <div>
-            <p className="font-medium text-sidebar-foreground">Diane Foster</p>
-            <p className="text-sm text-sidebar-foreground/70">Operations Director</p>
-          </div>
-        </div>
+ const Sidebar = () => (
+  <div className="h-screen w-[320px] border-r border-sidebar-border bg-sidebar flex flex-col">
 
-        <nav className="space-y-1.5">
-          <Button variant="secondary" className="w-full justify-start bg-sidebar-accent text-sidebar-accent-foreground shadow-none">
-            <Activity className="w-4 h-4 mr-3" /> Overview
-          </Button>
-          <Button variant="ghost" className="w-full justify-start text-sidebar-foreground/70 hover:text-sidebar-foreground">
-            <Users className="w-4 h-4 mr-3" /> Clients
-          </Button>
-          <Button variant="ghost" className="w-full justify-start text-sidebar-foreground/70 hover:text-sidebar-foreground">
-            <Heart className="w-4 h-4 mr-3" /> Caregivers
-          </Button>
-          <Button variant="ghost" className="w-full justify-start text-sidebar-foreground/70 hover:text-sidebar-foreground">
-            <CalendarIcon className="w-4 h-4 mr-3" /> Schedule
-          </Button>
-          <Button variant="ghost" className="w-full justify-start text-sidebar-foreground/70 hover:text-sidebar-foreground">
-            <FileText className="w-4 h-4 mr-3" /> Billing
-          </Button>
-          <Button variant="ghost" className="w-full justify-start text-sidebar-foreground/70 hover:text-sidebar-foreground">
-            <CheckCircle className="w-4 h-4 mr-3" /> Compliance
-          </Button>
-        </nav>
-      </div>
-      
-      <div className="mt-auto p-6">
-        <Button variant="ghost" className="w-full justify-start text-sidebar-foreground/70 hover:text-sidebar-foreground">
-          <Settings className="w-4 h-4 mr-3" /> Settings
-        </Button>
-        <Button variant="ghost" className="w-full justify-start text-destructive hover:bg-destructive/10">
-          <LogOut className="w-4 h-4 mr-3" /> Log Out
-        </Button>
+    {/* Logo */}
+    <div className="p-6">
+      <Link href="/" className="flex items-center gap-2">
+        <img
+          src="/befine-logo.jpeg"
+          alt="Befine"
+          className="h-9 object-contain"
+        />
+      </Link>
+    </div>
+
+    {/* Profile */}
+    <div className="px-6 pb-6">
+      <div className="flex items-center gap-3">
+        <Avatar className="h-12 w-12 border-2 border-primary/20">
+          <AvatarImage
+            src="https://i.pravatar.cc/150?u=diane"
+            alt="Diane Foster"
+          />
+          <AvatarFallback>DF</AvatarFallback>
+        </Avatar>
+
+        <div>
+          <p className="font-medium">Diane Foster</p>
+          <p className="text-sm text-muted-foreground">
+            Operations Director
+          </p>
+        </div>
       </div>
     </div>
-  );
 
+    {/* Menu */}
+    <div className="flex-1 px-6">
+      <nav className="space-y-2">
+      <Link href="/admin-dashboard">
+        <Button variant="secondary" className="w-full justify-start">
+          <Activity className="w-4 h-4 mr-3" />
+          Overview
+        </Button>
+      </Link>
+      <Link href="/clients">
+        <Button variant="ghost" className="w-full justify-start">
+          <Users className="w-4 h-4 mr-3" />
+          Clients
+        </Button>
+      </Link>
+      <Link href="/care-team">
+        <Button variant="ghost" className="w-full justify-start">
+          <Heart className="w-4 h-4 mr-3" />
+          Caregivers
+        </Button>
+      </Link>
+      <Link href="/appointments">
+        <Button variant="ghost" className="w-full justify-start">
+          <Calendar className="w-4 h-4 mr-3" />
+          Appointments
+        </Button>
+      </Link>
+      <Link href="/health-reports">
+        <Button variant="ghost" className="w-full justify-start">
+          <ShieldCheck className="w-4 h-4 mr-3" />
+          Health Reports
+        </Button>
+      </Link>
+      <Link href="/messages">
+        <Button variant="ghost" className="w-full justify-start">
+          <MessageSquare className="w-4 h-4 mr-3" />
+          Messages
+        </Button>
+      </Link>
+      <Link href="/notifications">
+        <Button variant="ghost" className="w-full justify-start">
+          <Bell className="w-4 h-4 mr-3" />
+          Notifications
+        </Button>
+      </Link>
+      <Link href="/analytics">
+        <Button variant="ghost" className="w-full justify-start">
+          <BarChart3 className="w-4 h-4 mr-3" />
+          Analytics
+        </Button>
+      </Link>
+      <Link href="/billing">
+        <Button variant="ghost" className="w-full justify-start">
+          <FileText className="w-4 h-4 mr-3" />
+          Billing
+        </Button>
+      </Link>
+      <Link href="/compliance">
+        <Button variant="ghost" className="w-full justify-start">
+          <CheckCircle className="w-4 h-4 mr-3" />
+          Compliance
+        </Button>
+      </Link>
+      </nav>
+    </div>
+
+    {/* Bottom Section */}
+    <div className="p-6 border-t">
+    <Link href="/settings">
+      <Button
+        variant="ghost"
+        className="w-full justify-start mb-2"
+      >
+        <Settings className="w-4 h-4 mr-3" />
+        Settings
+      </Button>
+    </Link>
+    <Link href="/">
+      <Button
+        variant="ghost"
+        className="w-full justify-start text-red-500 hover:text-red-600"
+      >
+        <LogOut className="w-4 h-4 mr-3" />
+        Log Out
+      </Button>
+    </Link>
+    </div>
+
+  </div>
+);
   return (
     <div className="flex h-screen bg-background overflow-hidden">
       {/* Desktop Sidebar */}
@@ -203,6 +309,27 @@ export default function AdminDashboard() {
             </Button>
             <div>
               <h1 className="text-2xl md:text-3xl font-serif font-medium">Operations Overview</h1>
+              <div className="flex gap-3 mt-4">
+                <Button>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Client
+                </Button>
+
+                <Button variant="outline">
+                  <Users className="w-4 h-4 mr-2" />
+                  Assign Caregiver
+                </Button>
+
+                <Button variant="outline">
+                  <Calendar className="w-4 h-4 mr-2" />
+                  Schedule Visit
+                </Button>
+
+                <Button variant="outline">
+                  <Bell className="w-4 h-4 mr-2" />
+                  Send Alert
+                </Button>
+              </div>
               <p className="text-sm text-muted-foreground flex items-center gap-2 mt-1">
                 <CalendarIcon className="w-3.5 h-3.5" /> {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
                 <span className="text-border mx-1">|</span>
@@ -220,6 +347,7 @@ export default function AdminDashboard() {
           <div className="p-4 md:p-8 space-y-8 max-w-7xl mx-auto pb-24">
             
             {/* 1. KPI Row */}
+            
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
               <Card className="shadow-sm">
                 <CardContent className="p-4 md:p-6">
@@ -257,8 +385,20 @@ export default function AdminDashboard() {
                 </CardContent>
               </Card>
             </div>
+            <Card>
+              <CardHeader>
+                <CardTitle>Quick Actions</CardTitle>
+              </CardHeader>
 
-            <div className="grid md:grid-cols-3 gap-8">
+              <CardContent className="flex flex-wrap gap-3">
+                <Button>Add Client</Button>
+                <Button>Add Caregiver</Button>
+                <Button>Schedule Visit</Button>
+                <Button>Generate Invoice</Button>
+                <Button>Send Alert</Button>
+              </CardContent>
+            </Card>
+            <div className="grid grid-cols-[2fr_1fr] gap-8">
               {/* Left Column (2/3 width) */}
               <div className="md:col-span-2 space-y-8">
                 
@@ -270,7 +410,7 @@ export default function AdminDashboard() {
                   <CardContent>
                     <div className="grid grid-cols-3 gap-4 text-center divide-x divide-border">
                       <div className="px-2">
-                        <div className="relative w-24 h-24 mx-auto mb-4">
+                        <div className="relative w-20 h-20 mx-auto mb-4">
                           <svg className="w-full h-full" viewBox="0 0 100 100">
                             <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="10" className="text-muted" />
                             <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="10" className="text-secondary" strokeDasharray={`${76 * 2.51} 251`} strokeDashoffset="0" transform="rotate(-90 50 50)" strokeLinecap="round" />
@@ -284,7 +424,7 @@ export default function AdminDashboard() {
                       </div>
                       
                       <div className="px-2">
-                        <div className="relative w-24 h-24 mx-auto mb-4">
+                        <div className="relative w-20 h-20 mx-auto mb-4">
                           <svg className="w-full h-full" viewBox="0 0 100 100">
                             <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="10" className="text-muted" />
                             <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="10" className="text-secondary" strokeDasharray={`${89 * 2.51} 251`} strokeDashoffset="0" transform="rotate(-90 50 50)" strokeLinecap="round" />
@@ -372,6 +512,8 @@ export default function AdminDashboard() {
                           <Plus className="w-4 h-4 mr-2" /> Add New Client
                         </Button>
                       </DialogTrigger>
+                      <Button size="sm">View</Button>
+                      <Button size="sm">Edit</Button>
                       <DialogContent className="sm:max-w-[500px]">
                         <form onSubmit={handleAddClientSubmit}>
                           <DialogHeader>
@@ -428,8 +570,10 @@ export default function AdminDashboard() {
                             <Button type="submit" data-testid="btn-add-client-submit">Create Profile</Button>
                           </DialogFooter>
                         </form>
+                        
                       </DialogContent>
                     </Dialog>
+                   
                   </CardHeader>
                   <CardContent>
                     <div className="relative mb-4">
@@ -441,8 +585,11 @@ export default function AdminDashboard() {
                         onChange={(e) => setClientSearch(e.target.value)}
                         data-testid="input-search-clients"
                       />
+                      
                     </div>
+                    
                     <div className="rounded-md border border-border overflow-hidden">
+                      
                       <Table>
                         <TableHeader className="bg-muted/50">
                           <TableRow>

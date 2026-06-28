@@ -7,7 +7,9 @@ import {
   Heart, Clock, Shield, AlertTriangle, AlertCircle, Info, Activity,
   CheckCircle2, Plus, LogOut, FileText, UserCircle, 
   MessageSquare, Calendar, Stethoscope, Menu, X, Star, FileInput, Truck,
-  ChevronRight, CalendarDays
+  ChevronRight, CalendarDays,
+  Bell,
+  Settings
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -138,21 +140,30 @@ export default function CaregiverDashboard() {
               <Activity className="w-5 h-5 text-sidebar-primary" /> Dashboard
             </span>
           </Link>
-          <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground transition-colors cursor-pointer">
-            <UserCircle className="w-5 h-5" /> My Clients
-          </div>
-          <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground transition-colors cursor-pointer">
-            <CalendarDays className="w-5 h-5" /> Schedule
-          </div>
-          <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground transition-colors cursor-pointer">
-            <MessageSquare className="w-5 h-5" /> Messages
-          </div>
-          <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground transition-colors cursor-pointer">
-            <FileText className="w-5 h-5" /> Reports
-          </div>
+          <Link href="/caregiver-clients">
+            <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground transition-colors cursor-pointer">
+              <UserCircle className="w-5 h-5" /> My Clients
+            </div>
+          </Link>
+          <Link href="/appointments">
+            <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground transition-colors cursor-pointer">
+              <CalendarDays className="w-5 h-5" /> Schedule
+            </div>
+          </Link>
+          <Link href="/messages">
+            <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground transition-colors cursor-pointer">
+              <MessageSquare className="w-5 h-5" /> Messages
+            </div>
+          </Link>
+          <Link href="/health-reports">
+            <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground transition-colors cursor-pointer">
+              <FileText className="w-5 h-5" /> Reports
+            </div>
+          </Link>
         </nav>
 
         <div className="p-4 border-t border-sidebar-border/50">
+        
           <Link href="/">
             <span className="flex items-center gap-3 px-3 py-2 rounded-lg text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground cursor-pointer" data-testid="nav-logout">
               <LogOut className="w-5 h-5" /> Log Out
@@ -173,7 +184,14 @@ export default function CaregiverDashboard() {
               <span className="mx-2 text-border">•</span>
               <span className="text-primary font-medium">4 tasks remaining today</span>
             </p>
+            <div className="flex gap-3 mt-4">
+              <Button>Log Visit</Button>
+              <Button variant="outline">Record Vitals</Button>
+              <Button variant="outline">Message Family</Button>
+              <Bell />
+            </div>
           </div>
+          
           <Button 
             className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm w-full md:w-auto"
             onClick={toggleShift}
@@ -242,6 +260,7 @@ export default function CaregiverDashboard() {
               <Card className="shadow-sm border-border/60 overflow-hidden">
                 <CardHeader className="bg-muted/30 pb-4 border-b border-border/50">
                   <CardTitle className="font-serif text-lg">My Assigned Clients</CardTitle>
+                  <Input placeholder="Search client..." />
                 </CardHeader>
                 <CardContent className="p-0 overflow-x-auto">
                   <table className="w-full text-sm text-left">

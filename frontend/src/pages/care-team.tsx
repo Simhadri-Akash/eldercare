@@ -9,14 +9,18 @@ import {
   Filter, Grid, List as ListIcon, ChevronDown, Check,
   MoreVertical, FileText
 } from "lucide-react";
-
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetClose } from "@/components/ui/sheet";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
@@ -25,6 +29,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useListCareTeam, useCreateCareTeamMember, useUpdateCareTeamMember, useDeleteCareTeamMember, getListCareTeamQueryKey, type CareTeamMember as ApiCareTeamMember, type CareTeamMemberCreate } from "@workspace/api-client-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // --- Types & Mock Data ---
 
@@ -759,160 +764,424 @@ export default function CareTeamPage() {
       </div>
 
       {/* MEMBER DETAIL PANEL */}
-      <Sheet open={showDetailPanel} onOpenChange={setShowDetailPanel}>
-        <SheetContent className="w-full sm:max-w-md p-0 flex flex-col gap-0 border-l border-border bg-card">
+      <Dialog
+        open={showDetailPanel}
+        onOpenChange={setShowDetailPanel}
+      >
+        <DialogContent
+          
+          className="
+            w-[95vw]
+            max-w-7xl
+            h-[90vh]
+            mt-[5vh]
+            rounded-3xl
+            p-0
+            bg-card
+            overflow-hidden
+          "
+        >
           {selectedMember && (
             <>
-              <div className="p-6 pb-0 relative">
-                <SheetClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none bg-muted p-2">
+              <div className="p-4 pb-0 relative">
+                <button
+                  onClick={() => setShowDetailPanel(false)}
+                  className="absolute right-4 top-4 rounded-sm opacity-70 hover:opacity-100 bg-muted p-2"
+                >
                   <X className="h-4 w-4" />
-                  <span className="sr-only">Close</span>
-                </SheetClose>
+                </button>
+                <span className="sr-only">Close</span>
                 
-                <div className="flex flex-col items-center text-center mt-6 mb-6">
+                
+                <div className="flex flex-col items-center text-center mt-0 mb-3">
                   <div className="relative mb-4">
-                    <Avatar className={`w-24 h-24 border-4 ${selectedMember.isPrimary ? 'border-primary' : 'border-background shadow-md'}`}>
-                      <AvatarFallback className="text-2xl font-serif bg-primary/5 text-primary">{selectedMember.initials}</AvatarFallback>
+                    <Avatar className={`w-20 h-20 border-4 ${selectedMember.isPrimary ? 'border-primary' : 'border-background shadow-md'}`}>
+                      <AvatarFallback className="text-xl font-serif bg-primary/5 text-primary">{selectedMember.initials}</AvatarFallback>
                     </Avatar>
                     <div className={`absolute bottom-1 right-1 w-5 h-5 rounded-full border-2 border-card ${getStatusColor(selectedMember.status)}`} />
                   </div>
-                  <h2 className="text-2xl font-serif mb-1">{selectedMember.name}</h2>
+                  <h2 className="text-xl font-serif mb-1">{selectedMember.name}</h2>
                   <Badge variant="outline" className={`rounded-full ${getRoleOutlineColor(selectedMember.role)} mb-2`}>
                     {selectedMember.roleType}
                   </Badge>
                   <p className="text-sm text-muted-foreground">{selectedMember.experience} years experience</p>
                 </div>
 
-                <div className="flex gap-2 mb-6">
-                  <Button className="flex-1 rounded-full shadow-sm">
-                    <MessageSquare className="w-4 h-4 mr-2" /> Message
+                <div className="flex justify-center gap-3 mb-6">
+                  <Button className="w-44 rounded-full shadow-sm">
+                    <MessageSquare className="w-4 h-4 mr-2" />
+                    Message
                   </Button>
-                  <Button variant="outline" className="flex-1 rounded-full">
+                  <Button variant="outline" className="w-40 rounded-full">
                     <Calendar className="w-4 h-4 mr-2" /> {selectedMember.role === 'Caregiver' ? 'Schedule' : 'Book'}
                   </Button>
                 </div>
               </div>
 
-              <div className="flex-1 overflow-y-auto px-6 pb-8 space-y-8">
-                
-                {/* Rating Breakdown */}
-                <section>
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-serif font-medium text-lg">Reviews</h3>
-                    <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4 fill-primary text-primary" />
-                      <span className="font-bold">{selectedMember.rating}</span>
-                      <span className="text-muted-foreground text-sm">({selectedMember.reviews})</span>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-muted/30 rounded-2xl p-4 space-y-2 mb-4 text-sm">
-                    <div className="flex justify-between items-center">
-                      <span className="text-muted-foreground">Punctuality</span>
-                      <span className="font-medium flex items-center gap-1">5.0 <Star className="w-3 h-3 text-primary fill-primary"/></span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-muted-foreground">Communication</span>
-                      <span className="font-medium flex items-center gap-1">4.8 <Star className="w-3 h-3 text-primary fill-primary"/></span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-muted-foreground">Care Quality</span>
-                      <span className="font-medium flex items-center gap-1">4.9 <Star className="w-3 h-3 text-primary fill-primary"/></span>
-                    </div>
-                  </div>
-                </section>
+              <div className="flex-1 overflow-y-auto px-6 pb-8">
+                <Tabs defaultValue="profile">
 
-                {/* Bio & Details */}
-                <section className="space-y-4">
-                  <h3 className="font-serif font-medium text-lg">About</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {selectedMember.bio}
-                  </p>
+                  <TabsList>
+                    <TabsTrigger value="profile">Profile</TabsTrigger>
+                    <TabsTrigger value="patients">Patients</TabsTrigger>
+                    <TabsTrigger value="schedule">Schedule</TabsTrigger>
+                  </TabsList>
 
-                  <div className="space-y-3 pt-2">
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Specialties</p>
-                      <div className="flex flex-wrap gap-2">
-                        {selectedMember.specialties.map(s => (
-                          <Badge key={s} variant="secondary" className="font-normal bg-muted text-foreground hover:bg-muted">{s}</Badge>
-                        ))}
-                      </div>
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Languages</p>
-                      <p className="text-sm">{selectedMember.languages.join(", ")}</p>
-                    </div>
-                    {selectedMember.certifications && (
-                      <div>
-                        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Certifications</p>
-                        <ul className="text-sm space-y-1 list-inside list-disc text-muted-foreground">
-                          {selectedMember.certifications.map(c => <li key={c}>{c}</li>)}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-                </section>
-
-                {/* Visit History */}
-                <section>
-                  <h3 className="font-serif font-medium text-lg mb-4">Recent History</h3>
-                  {selectedMember.history.length > 0 ? (
-                    <div className="space-y-4 relative before:absolute before:inset-0 before:ml-2 before:-translate-x-px md:before:ml-2.5 md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-border before:to-transparent">
-                      {selectedMember.history.map((h, i) => (
-                        <div key={i} className="relative flex items-start gap-4">
-                          <div className="absolute left-0 w-5 h-5 rounded-full bg-background border-2 border-primary mt-0.5 flex items-center justify-center shadow-sm z-10" />
-                          <div className="pl-8">
-                            <p className="text-xs font-medium text-muted-foreground mb-0.5">{h.date} • {h.duration}</p>
-                            <p className="text-sm font-medium mb-1">{h.type}</p>
-                            <p className="text-sm text-muted-foreground bg-muted/40 p-3 rounded-xl border border-border/50">{h.note}</p>
+                  <TabsContent value="profile">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6"> 
+                      
+                      {/* Rating Breakdown */}
+                      <section>
+                        <div className="flex items-center justify-between mb-3">
+                          <h3 className="font-serif font-medium text-lg">Reviews</h3>
+                          <div className="flex items-center gap-1">
+                            <Star className="w-4 h-4 fill-primary text-primary" />
+                            <span className="font-bold">{selectedMember.rating}</span>
+                            <span className="text-muted-foreground text-sm">({selectedMember.reviews})</span>
                           </div>
                         </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-sm text-muted-foreground italic">No recent history with this provider.</p>
-                  )}
-                </section>
-
-                {/* Contact */}
-                <section className="bg-muted/30 p-4 rounded-2xl border border-border/50">
-                  <h3 className="font-serif font-medium mb-3">Contact Information</h3>
-                  <div className="space-y-3 text-sm">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-card flex items-center justify-center shrink-0 border border-border">
-                        <Phone className="w-4 h-4 text-muted-foreground" />
-                      </div>
-                      <span>{selectedMember.phone}</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-card flex items-center justify-center shrink-0 border border-border">
-                        <Mail className="w-4 h-4 text-muted-foreground" />
-                      </div>
-                      <span>{selectedMember.email}</span>
-                    </div>
-                    {selectedMember.location && (
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-card flex items-center justify-center shrink-0 border border-border">
-                          <MapPin className="w-4 h-4 text-muted-foreground" />
+                        
+                        <div className="bg-muted/30 rounded-2xl p-4 space-y-2 mb-4 text-sm">
+                          <div className="flex justify-between items-center">
+                            <span className="text-muted-foreground">Punctuality</span>
+                            <span className="font-medium flex items-center gap-1">5.0 <Star className="w-3 h-3 text-primary fill-primary"/></span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-muted-foreground">Communication</span>
+                            <span className="font-medium flex items-center gap-1">4.8 <Star className="w-3 h-3 text-primary fill-primary"/></span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-muted-foreground">Care Quality</span>
+                            <span className="font-medium flex items-center gap-1">4.9 <Star className="w-3 h-3 text-primary fill-primary"/></span>
+                          </div>
                         </div>
-                        <span>{selectedMember.location}</span>
-                      </div>
-                    )}
-                  </div>
-                </section>
-                
+                      </section>
+
+                      {/* Bio & Details */}
+                      <section className="space-y-4">
+                        <h3 className="font-serif font-medium text-lg">About</h3>
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                          {selectedMember.bio}
+                        </p>
+
+                        <div className="space-y-3 pt-2">
+                          <div>
+                            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Specialties</p>
+                            <div className="flex flex-wrap gap-2">
+                              {selectedMember.specialties.map(s => (
+                                <Badge key={s} variant="secondary" className="font-normal bg-muted text-foreground hover:bg-muted">{s}</Badge>
+                              ))}
+                            </div>
+                          </div>
+                          <div>
+                            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Languages</p>
+                            <p className="text-sm">{selectedMember.languages.join(", ")}</p>
+                          </div>
+                          {selectedMember.certifications && (
+                            <div>
+                              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Certifications</p>
+                              <ul className="text-sm space-y-1 list-inside list-disc text-muted-foreground">
+                                {selectedMember.certifications.map(c => <li key={c}>{c}</li>)}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+                      </section>
+
+                      {/* Visit History */}
+                      <section>
+                        <h3 className="font-serif font-medium text-lg mb-4">Recent History</h3>
+                        {selectedMember.history.length > 0 ? (
+                          <div className="space-y-4 relative before:absolute before:inset-0 before:ml-2 before:-translate-x-px md:before:ml-2.5 md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-border before:to-transparent">
+                            {selectedMember.history.map((h, i) => (
+                              <div key={i} className="relative flex items-start gap-4">
+                                <div className="absolute left-0 w-5 h-5 rounded-full bg-background border-2 border-primary mt-0.5 flex items-center justify-center shadow-sm z-10" />
+                                <div className="pl-8">
+                                  <p className="text-xs font-medium text-muted-foreground mb-0.5">{h.date} • {h.duration}</p>
+                                  <p className="text-sm font-medium mb-1">{h.type}</p>
+                                  <p className="text-sm text-muted-foreground bg-muted/40 p-3 rounded-xl border border-border/50">{h.note}</p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-sm text-muted-foreground italic">No recent history with this provider.</p>
+                        )}
+                      </section>
+                    
+                      {/* Contact */}
+                      <section className="bg-muted/30 p-4 rounded-2xl border border-border/50">
+                        <h3 className="font-serif font-medium mb-3">Contact Information</h3>
+                        <div className="space-y-3 text-sm">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-card flex items-center justify-center shrink-0 border border-border">
+                              <Phone className="w-4 h-4 text-muted-foreground" />
+                            </div>
+                            <span>{selectedMember.phone}</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-card flex items-center justify-center shrink-0 border border-border">
+                              <Mail className="w-4 h-4 text-muted-foreground" />
+                            </div>
+                            <span>{selectedMember.email}</span>
+                          </div>
+                          {selectedMember.location && (
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-full bg-card flex items-center justify-center shrink-0 border border-border">
+                                <MapPin className="w-4 h-4 text-muted-foreground" />
+                              </div>
+                              <span>{selectedMember.location}</span>
+                            </div>
+                          )}
+                        </div>
+                      </section>
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="patients">
+                    <div className="space-y-4">
+                      <Card className="mt-2">
+                        <CardHeader>
+                          <CardTitle>Assigned Patients</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="space-y-3">
+                            <div className="flex justify-between items-center">
+                              <div>
+                                <p className="text-sm font-medium">
+                                  👤 Margaret Chen
+                                </p>
+                              </div>
+
+                              <Badge>
+                                Primary
+                              </Badge>
+                            </div>
+
+                            <div className="flex justify-between items-center">
+                              <div>
+                                <p className="text-sm font-medium">
+                                  👤 John Peterson
+                                </p>
+                              </div>
+
+                              <Badge variant="outline">
+                                Secondary
+                              </Badge>
+                            </div>
+
+                          </div>
+                        </CardContent>
+                      </Card>
+                      <Card className="mt-2">
+                        <CardHeader>
+                          <CardTitle>Recent Care Notes</CardTitle>
+                        </CardHeader>
+
+                        <CardContent className="space-y-3">
+                          <div className="p-3 rounded-lg bg-muted">
+                            Assisted with morning medication.
+                          </div>
+
+                          <div className="p-3 rounded-lg bg-muted">
+                            Completed mobility exercises.
+                          </div>
+
+                          <div className="p-3 rounded-lg bg-muted">
+                            Family updated on progress.
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="schedule">
+                    <div className="space-y-4">
+                      <Card className="mt-2">
+                        <CardHeader>
+                          <CardTitle>Upcoming Visits</CardTitle>
+                        </CardHeader>
+
+                        <CardContent className="space-y-3">
+
+                          <div className="border rounded-lg p-3">
+                            <p className="font-medium">
+                              👤 Margaret Chen
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                              📅 Jun 25, 2026 • 11:00 AM
+                            </p>
+                          </div>
+
+                          <div className="border rounded-lg p-3">
+                            <p className="font-medium">
+                              👤John Peterson
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                              Jun 26, 2026 • 09:00 AM
+                            </p>
+                          </div>
+
+                        </CardContent>
+                      </Card>
+                      <Card className="mt-2">
+                        <CardHeader>
+                          <CardTitle>Performance Metrics</CardTitle>
+                        </CardHeader>
+
+                        <CardContent className="space-y-4">
+
+                          <div>
+                            <div className="flex justify-between text-sm mb-1">
+                              <span>Patient Satisfaction</span>
+                              <span>4.8 / 5</span>
+                            </div>
+                            <div className="h-2 bg-muted rounded-full overflow-hidden">
+                              <div className="h-full w-[96%] bg-primary rounded-full" />
+                            </div>
+                          </div>
+
+                          <div>
+                            <div className="flex justify-between text-sm mb-1">
+                              <span>Completed Visits</span>
+                              <span>124</span>
+                            </div>
+                            <div className="h-2 bg-muted rounded-full overflow-hidden">
+                              <div className="h-full w-[85%] bg-primary rounded-full" />
+                            </div>
+                          </div>
+
+                          <div>
+                            <div className="flex justify-between text-sm mb-1">
+                              <span>Response Time</span>
+                              <span>15 mins</span>
+                            </div>
+                            <div className="h-2 bg-muted rounded-full overflow-hidden">
+                              <div className="h-full w-[90%] bg-primary rounded-full" />
+                            </div>
+                          </div>
+
+                        </CardContent>
+                      </Card>
+                      <Card className="mt-2">
+                        <CardHeader>
+                          <CardTitle>Availability Schedule</CardTitle>
+                        </CardHeader>
+
+                        <CardContent className="space-y-3">
+
+                          <div className="flex justify-between text-sm">
+                            <span>Monday</span>
+                            <span>09:00 AM - 05:00 PM</span>
+                          </div>
+
+                          <div className="flex justify-between text-sm">
+                            <span>Tuesday</span>
+                            <span>09:00 AM - 05:00 PM</span>
+                          </div>
+
+                          <div className="flex justify-between text-sm">
+                            <span>Wednesday</span>
+                            <span>09:00 AM - 05:00 PM</span>
+                          </div>
+
+                          <div className="flex justify-between text-sm">
+                            <span>Thursday</span>
+                            <span>09:00 AM - 05:00 PM</span>
+                          </div>
+
+                          <div className="flex justify-between text-sm">
+                            <span>Friday</span>
+                            <span>09:00 AM - 05:00 PM</span>
+                          </div>
+
+                          <div className="flex justify-between text-sm">
+                            <span>Saturday</span>
+                            <span>10:00 AM - 02:00 PM</span>
+                          </div>
+
+                          <div className="flex justify-between text-sm">
+                            <span>Sunday</span>
+                            <Badge variant="outline">
+                              Off Duty
+                            </Badge>
+                          </div>
+
+                          <div className="pt-3 border-t">
+                            <p className="text-sm text-muted-foreground">
+                              Next Available Slot
+                            </p>
+                            <p className="font-medium">
+                              Jun 25, 2026 • 11:00 AM
+                            </p>
+                          </div>
+
+                        </CardContent>
+                      </Card>
+                      <Card className="mt-2">
+                        <CardHeader>
+                          <CardTitle>Certifications & Licenses</CardTitle>
+                        </CardHeader>
+
+                        <CardContent className="space-y-3">
+
+                          <div className="border rounded-lg p-3">
+                            <p className="font-medium">
+                              Registered Caregiver License
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                              License #CG-2026-1045
+                            </p>
+                            <Badge className="mt-2">
+                              Active
+                            </Badge>
+                          </div>
+
+                          <div className="border rounded-lg p-3">
+                            <p className="font-medium">
+                              CPR & First Aid Certification
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                              Expires Dec 2027
+                            </p>
+                            <Badge className="mt-2">
+                              Verified
+                            </Badge>
+                          </div>
+
+                          <div className="border rounded-lg p-3">
+                            <p className="font-medium">
+                              Elder Care Specialist Training
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                              Completed 2025
+                            </p>
+                            <Badge className="mt-2">
+                              Completed
+                            </Badge>
+                          </div>
+
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </TabsContent>
+
+                  </Tabs>
+            
+             
                 <div className="flex justify-center pb-4">
-                  <button className="text-xs text-destructive hover:underline">Report an issue with this provider</button>
+                  <button className="text-xs text-destructive hover:underline">
+                    Report an issue with this provider
+                  </button>
                 </div>
               </div>
             </>
           )}
-        </SheetContent>
-      </Sheet>
-
+        </DialogContent>
+      </Dialog>
       {/* REQUEST NEW CAREGIVER MODAL */}
       <Dialog open={showRequestModal} onOpenChange={setShowRequestModal}>
-        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-[600px] max-h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-2xl font-serif">Request a New Caregiver</DialogTitle>
             <DialogDescription>
@@ -921,7 +1190,7 @@ export default function CareTeamPage() {
           </DialogHeader>
 
           <div className="space-y-6 py-4">
-            <div className="space-y-4">
+            <section className="lg:col-span-2 space-y-4">
               <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Care Type</h3>
               <RadioGroup defaultValue="part-time" className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {["Full-time", "Part-time", "On-call"].map((type) => (
@@ -937,7 +1206,7 @@ export default function CareTeamPage() {
                   </div>
                 ))}
               </RadioGroup>
-            </div>
+            </section>
 
             <div className="space-y-4">
               <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Required Specialties</h3>
